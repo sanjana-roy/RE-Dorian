@@ -11,6 +11,7 @@ packages = c("rtweet","here")
 setdiff(packages, rownames(installed.packages()))
 install.packages(setdiff(packages, rownames(installed.packages())), quietly=TRUE)
 
+library(dplyr)
 library(rtweet)
 library(here)
 
@@ -29,11 +30,11 @@ library(here)
 #this should launch a web browser and ask you to log in to twitter
 #replace app, consumer_key, and consumer_secret data with your own developer acct info
 twitter_token <- create_token(
-  app = "yourapp",  					#replace yourapp with your app name
-  consumer_key = "yourkey",  		#replace yourkey with your consumer key
-  consumer_secret = "yoursecret",  #replace yoursecret with your consumer secret
-  access_token = NULL,
-  access_secret = NULL
+  app = "Cartastrophe Project",  					#replace yourapp with your app name
+  consumer_key = "cJKv1sVmhp1JHYOWTI6ROcE4i",  		#replace yourkey with your consumer key
+  consumer_secret = "lunw5kQoOU58fnXYcfrZgB4rDf0Oudzs4iwzFJXKwnXLS1Ujqe",  #replace yoursecret with your consumer secret
+  access_token = "3910196838-lrjL5ggowACR2oqqVRo5vjurplyGSQoxOIEK0aW",
+  access_secret = "K8M2v0Did0dZ7Qzt2lcE4DdgsDLYKVhDpEmmYRXtlLsEt"
 )
 
 #get tweets for hurricane Dorian, searched on September 11, 2019
@@ -62,15 +63,16 @@ load(here("data","derived","private","dorian.RData"))
 #sample function: lat_lng(x, coords = c("coords_coords", "bbox_coords"))
 
 # list unique/distinct place types to check if you got them all
-unique(dorian$place_type)
+unique(dorian3$place_type)
 
 # list and count unique place types
-# NA results included based on profile locations, not geotagging / geocoding. If you have these, it indicates that you exhausted the more precise tweets in your search parameters
-count(dorian, place_type)
+# NA results included based on profile locations, not geotagging / geocoding. 
+# If you have these, it indicates that you exhausted the more precise tweets in your search parameters
+count(dorian3, place_type)
 
 #convert GPS coordinates into lat and lng columns
 #do not use geo_coords! Lat/Lng will come out inverted
-dorian <- lat_lng(dorian,coords=c("coords_coords"))
+dorian3 <- lat_lng(dorian3,coords=c("coords_coords"))
 november <- lat_lng(november,coords=c("coords_coords"))
 
 #select any tweets with lat and lng columns (from GPS) or designated place types of your choosing
@@ -78,7 +80,7 @@ dorian <- subset(dorian, place_type == 'city'| place_type == 'neighborhood'| pla
 november <- subset(november, place_type == 'city'| place_type == 'neighborhood'| place_type == 'poi' | !is.na(lat))
 
 #convert bounding boxes into centroids for lat and lng columns
-dorian <- lat_lng(dorian,coords=c("bbox_coords"))
+dorian3 <- lat_lng(dorian3,coords=c("bbox_coords"))
 november <- lat_lng(november,coords=c("bbox_coords"))
 
 

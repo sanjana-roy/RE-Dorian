@@ -30,17 +30,17 @@ library(here)
 
 #create temporal data frame & graph it
 
-dorian <- ts_data(dorian, by="hours")
-ts_plot(dorian, by="hours")
+dorianByHour <- ts_data(dorian3, by="hours")
+ts_plot(dorian3, by="hours")
 
 ############# NETWORK ANALYSIS ############# 
 
 #this is here as an example. change to the dorian3 data you processed in the previous script to try...
 
 #create network data frame. Other options for 'edges' in the network include mention, retweet, and reply
-dorianNetwork <- network_graph(dorian, c("quote"))
+dorianNetwork <- network_graph(dorian3, c("quote"))
 
-plot.igraph(winterTweetNetwork)
+plot.igraph(dorianNetwork)
 #Please, this is incredibly ugly... if you finish early return to this function and see if we can modify its parameters to improve aesthetics
 
 ############# TEXT / CONTEXTUAL ANALYSIS ############# 
@@ -127,7 +127,7 @@ ggplot() +
 #Connectign to Postgres
 #Create a con database connection with the dbConnect function.
 #Change the user and password to your own!
-con <- dbConnect(RPostgres::Postgres(), dbname='dsm', host='artemis', user='user', password='password') 
+con <- dbConnect(RPostgres::Postgres(), dbname='dsm', host='artemis', user='sanjana', password='roy') 
 
 #list the database tables, to check if the database is working
 dbListTables(con) 
@@ -143,7 +143,7 @@ dbWriteTable(con,'dorian',doriansql, overwrite=TRUE)
 # SQL to add geometry column of type point and crs NAD 1983: 
 # SELECT AddGeometryColumn ('schemaname','dorian','geom',4269,'POINT',2, false);
 # SQL to calculate geometry:
-# UPDATE dorian set geom = st_transform(st_makepoint(lng,lat),4326,4269);
+# UPDATE dorian SET geom = st_transform(st_setsrid(st_makepoint(lng,lat),4326),4269);
 
 #make all lower-case names for counties, because PostGreSQL is not into capitalization
 
@@ -157,6 +157,8 @@ dbDisconnect(con)
 # Either in R or in PostGIS (via QGIS DB Manager)...
 
 # Count the number of dorian points in each county
+
+
 # Count the number of november points in each county
 # Set counties with no points to 0 for the november count
 # Calculate the normalized difference tweet index (made this up, based on NDVI), where
